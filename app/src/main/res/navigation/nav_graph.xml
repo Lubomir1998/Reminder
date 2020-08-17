@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/mainScreen">
+
+    <fragment
+        android:id="@+id/mainScreen"
+        android:name="com.example.reminder.ui.MainScreen"
+        android:label="MainScreen" >
+        <action
+            android:id="@+id/action_mainScreen_to_addEvent"
+            app:destination="@id/addEvent"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_mainScreen_to_detailScreen"
+            app:destination="@id/detailScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/addEvent"
+        android:name="com.example.reminder.ui.AddEvent"
+        android:label="AddEvent" >
+        <action
+            android:id="@+id/action_addEvent_to_mainScreen"
+            app:destination="@id/mainScreen"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/detailScreen"
+        android:name="com.example.reminder.ui.DetailScreen"
+        android:label="DetailScreen" >
+        <action
+            android:id="@+id/action_detailScreen_to_mainScreen"
+            app:destination="@id/mainScreen" />
+        <argument
+            android:name="event_title"
+            app:argType="string" />
+        <argument
+            android:name="event_description"
+            app:argType="string" />
+        <argument
+            android:name="event_is_happened"
+            app:argType="boolean" />
+    </fragment>
+</navigation>
