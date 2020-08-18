@@ -1,6 +1,7 @@
 package com.example.reminder.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class MainScreen : Fragment(R.layout.main_fragment) {
     private lateinit var binding: MainFragmentBinding
     private lateinit var listener: MyAdapter.OnItemClickListener
 
+
     override fun onResume() {
         super.onResume()
 
@@ -42,6 +44,9 @@ class MainScreen : Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
         // recyclerView itemClickListener
         listener = object : MyAdapter.OnItemClickListener {
@@ -99,18 +104,50 @@ class MainScreen : Fragment(R.layout.main_fragment) {
         })
 
 
+        // handle upcoming events button clicked style and observing changes from the view model
+        model.getUpcomingLiveData().observe(requireActivity(), Observer { buttonUpcoming ->
+            if(buttonUpcoming){
+                binding.newEventsButton.setBackgroundResource(R.drawable.clicked_button)
+                binding.pastEventsButton.setBackgroundResource(R.drawable.button_style)
+
+                // show chosen events after screen rotation
+                model.listOfUpcomingEventsLiveData.observe(requireActivity(), Observer {
+                    displayData(it)
+                })
+            }
+        })
+
         binding.newEventsButton.setOnClickListener {
+            model.newButtonClick()
+
             model.listOfUpcomingEventsLiveData.observe(requireActivity(), Observer {
                 displayData(it)
             })
         }
+        ///////////////////////
+
+        // handle past events button clicked style and observing changes from the view model
+        model.getPastLiveData().observe(requireActivity(), Observer { buttonPast ->
+            if(buttonPast){
+                binding.pastEventsButton.setBackgroundResource(R.drawable.clicked_button)
+                binding.newEventsButton.setBackgroundResource(R.drawable.button_style)
+
+                // show chosen events after screen rotation
+                model.listOfPastEventsLiveData.observe(requireActivity(), Observer {
+                    displayData(it)
+                })
+            }
+        })
+
 
         binding.pastEventsButton.setOnClickListener {
+            model.pastButtonClick()
+
             model.listOfPastEventsLiveData.observe(requireActivity(), Observer {
                 displayData(it)
             })
         }
-
+        /////////////////////
     }
 
     private fun displayData(list: List<Event>){

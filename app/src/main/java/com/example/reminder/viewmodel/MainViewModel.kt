@@ -2,6 +2,7 @@ package com.example.reminder.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reminder.db.Event
@@ -15,6 +16,12 @@ class MainViewModel
     val listOfAllEventsLiveData: LiveData<List<Event>> = repository.getAllEvents()
     val listOfUpcomingEventsLiveData: LiveData<List<Event>> = repository.getUpcomingEvents()
     val listOfPastEventsLiveData: LiveData<List<Event>> = repository.getPastEvents()
+    var buttonPastIsClickedLiveData = MutableLiveData<Boolean>()
+    var buttonUpcomingIsClickedLiveData = MutableLiveData<Boolean>()
+
+    fun getPastLiveData(): MutableLiveData<Boolean> = buttonPastIsClickedLiveData
+    fun getUpcomingLiveData(): MutableLiveData<Boolean> = buttonUpcomingIsClickedLiveData
+
 
     fun insertInDB(event: Event){
         viewModelScope.launch(Dispatchers.IO) {
@@ -32,6 +39,16 @@ class MainViewModel
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(event)
         }
+    }
+
+    fun pastButtonClick(){
+        buttonUpcomingIsClickedLiveData.value = false
+        buttonPastIsClickedLiveData.value = true
+    }
+
+    fun newButtonClick(){
+        buttonUpcomingIsClickedLiveData.value = true
+        buttonPastIsClickedLiveData.value = false
     }
 
 }
