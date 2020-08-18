@@ -139,10 +139,6 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
         val intent = Intent(requireContext(), AlertReceiver::class.java)
 
-        intent.putExtra("key", title)
-        intent.putExtra("key2", event.timeStamp)
-        intent.putExtra("key3", event.description)
-
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), event.timeStamp.toInt(), intent, 0)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 

@@ -1,5 +1,9 @@
 package com.example.reminder.ui
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +22,7 @@ import com.example.reminder.R
 import com.example.reminder.adapter.MyAdapter
 import com.example.reminder.databinding.MainFragmentBinding
 import com.example.reminder.db.Event
+import com.example.reminder.notify.AlertReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +86,7 @@ class MainScreen : Fragment(R.layout.main_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val list = model.listOfAllEventsLiveData.value!!
                 model.deleteFromDB(MyAdapter(list, listener).getNoteAt(viewHolder.adapterPosition))
+                cancelAlarm(MyAdapter(list, listener).getNoteAt(viewHolder.adapterPosition))
                 Toast.makeText(requireContext(), "Event deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(binding.recyclerView)
@@ -162,6 +168,15 @@ class MainScreen : Fragment(R.layout.main_fragment) {
         /////////////////////
     }
 
+
+    private fun cancelAlarm(event: Event){
+        val alarmManager: AlarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(requireContext(), AlertReceiver::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), event.timeStamp.toInt(), intent, 0)
+        alarmManager.cancel(pendingIntent)
+    }
 
 
     private fun displayData(list: List<Event>){
