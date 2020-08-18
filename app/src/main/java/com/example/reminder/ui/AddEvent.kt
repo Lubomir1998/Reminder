@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
             binding.addEventEditText.text.clear()
 
-            startAlarm(title)
+            startAlarm(title, event)
 
             Toast.makeText(requireContext(), "Event added", Toast.LENGTH_SHORT).show()
             view?.findNavController()?.navigate(R.id.action_addEvent_to_mainScreen)
@@ -132,7 +133,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         binding.timeTextView.text = "$h:$m"
     }
 
-    private fun startAlarm(title: String){
+    private fun startAlarm(title: String, event: Event){
 
         val alarmManager: AlarmManager = requireContext().getSystemService(ALARM_SERVICE) as AlarmManager
 
@@ -140,8 +141,9 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
         intent.putExtra("key", title)
 
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), event.timeStamp.toInt(), intent, 0)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+
 
     }
 
