@@ -20,8 +20,11 @@ class MainViewModel
     var buttonPastIsClickedLiveData = MutableLiveData<Boolean>()
     var buttonUpcomingIsClickedLiveData = MutableLiveData<Boolean>()
 
-    fun getPastLiveData(): MutableLiveData<Boolean> = buttonPastIsClickedLiveData
-    fun getUpcomingLiveData(): MutableLiveData<Boolean> = buttonUpcomingIsClickedLiveData
+
+    init {
+        buttonPastIsClickedLiveData.value = false
+        buttonUpcomingIsClickedLiveData.value = false
+    }
 
 
     fun insertInDB(event: Event){
@@ -44,12 +47,12 @@ class MainViewModel
 
     fun pastButtonClick(){
         buttonUpcomingIsClickedLiveData.value = false
-        buttonPastIsClickedLiveData.value = true
+        buttonPastIsClickedLiveData.value = !buttonPastIsClickedLiveData.value!!
     }
 
     fun newButtonClick(){
-        buttonUpcomingIsClickedLiveData.value = true
         buttonPastIsClickedLiveData.value = false
+        buttonUpcomingIsClickedLiveData.value = !buttonUpcomingIsClickedLiveData.value!!
     }
 
 

@@ -19,6 +19,10 @@ import com.example.reminder.adapter.MyAdapter
 import com.example.reminder.databinding.MainFragmentBinding
 import com.example.reminder.db.Event
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainScreen : Fragment(R.layout.main_fragment) {
@@ -26,7 +30,6 @@ class MainScreen : Fragment(R.layout.main_fragment) {
     private val model: MainViewModel by viewModels()
     private lateinit var binding: MainFragmentBinding
     private lateinit var listener: MyAdapter.OnItemClickListener
-
 
     override fun onResume() {
         super.onResume()
@@ -44,8 +47,6 @@ class MainScreen : Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
 
         // recyclerView itemClickListener
@@ -99,23 +100,35 @@ class MainScreen : Fragment(R.layout.main_fragment) {
         }
 
         // show all events
-        model.listOfAllEventsLiveData.observe(requireActivity(), Observer {
-            displayData(it)
+        model.listOfAllEventsLiveData.observe(requireActivity(), Observer { allEventsList->
+            displayData(allEventsList)
         })
 
 
         // handle upcoming events button clicked style and observing changes from the view model
-        model.getUpcomingLiveData().observe(requireActivity(), Observer { buttonUpcoming ->
-            if(buttonUpcoming){
-                binding.newEventsButton.setBackgroundResource(R.drawable.clicked_button)
-                binding.pastEventsButton.setBackgroundResource(R.drawable.button_style)
+        model.buttonUpcomingIsClickedLiveData.observe(
+            requireActivity(),
+            Observer { buttonUpcomingIsSelected ->
+                if (buttonUpcomingIsSelected) {
+                    binding.newEventsButton.setBackgroundResource(R.drawable.clicked_button)
+                    binding.pastEventsButton.setBackgroundResource(R.drawable.button_style)
 
-                // show chosen events after screen rotation
-                model.listOfUpcomingEventsLiveData.observe(requireActivity(), Observer {
-                    displayData(it)
-                })
-            }
-        })
+                    // show chosen events after screen rotation
+                    model.listOfUpcomingEventsLiveData.observe(requireActivity(), Observer { upcomingEventsList ->
+                            displayData(upcomingEventsList)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Log.d("TAG", "***********: $upcomingEventsList")
+                        }
+                        })
+                } else {
+                    binding.newEventsButton.setBackgroundResource(R.drawable.button_style)
+
+                    // show all events
+                    model.listOfAllEventsLiveData.observe(requireActivity(), Observer { allEventsList ->
+                            displayData(allEventsList)
+                        })
+                }
+            })
 
         binding.newEventsButton.setOnClickListener {
             model.newButtonClick()
@@ -123,14 +136,21 @@ class MainScreen : Fragment(R.layout.main_fragment) {
         ///////////////////////
 
         // handle past events button clicked style and observing changes from the view model
-        model.getPastLiveData().observe(requireActivity(), Observer { buttonPast ->
-            if(buttonPast){
+        model.buttonPastIsClickedLiveData.observe(requireActivity(), Observer { buttonPastIsSelected ->
+            if (buttonPastIsSelected) {
                 binding.pastEventsButton.setBackgroundResource(R.drawable.clicked_button)
                 binding.newEventsButton.setBackgroundResource(R.drawable.button_style)
 
                 // show chosen events after screen rotation
-                model.listOfPastEventsLiveData.observe(requireActivity(), Observer {
-                    displayData(it)
+                model.listOfPastEventsLiveData.observe(requireActivity(), Observer { pastEventsList->
+                    displayData(pastEventsList)
+                })
+            } else {
+                binding.pastEventsButton.setBackgroundResource(R.drawable.button_style)
+
+                // show all events
+                model.listOfAllEventsLiveData.observe(requireActivity(), Observer { allEventsList->
+                    displayData(allEventsList)
                 })
             }
         })
