@@ -119,10 +119,6 @@ class MainScreen : Fragment(R.layout.main_fragment) {
 
         binding.newEventsButton.setOnClickListener {
             model.newButtonClick()
-
-            model.listOfUpcomingEventsLiveData.observe(requireActivity(), Observer {
-                displayData(it)
-            })
         }
         ///////////////////////
 
@@ -142,13 +138,11 @@ class MainScreen : Fragment(R.layout.main_fragment) {
 
         binding.pastEventsButton.setOnClickListener {
             model.pastButtonClick()
-
-            model.listOfPastEventsLiveData.observe(requireActivity(), Observer {
-                displayData(it)
-            })
         }
         /////////////////////
     }
+
+
 
     private fun displayData(list: List<Event>){
         val adapter = binding.recyclerView.adapter as MyAdapter
