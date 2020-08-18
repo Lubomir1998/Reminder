@@ -22,6 +22,12 @@ class MainViewModel
         }
     }
 
+    fun updateFromDB(event: Event){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.update(event)
+        }
+    }
+
     fun deleteFromDB(event: Event){
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(event)

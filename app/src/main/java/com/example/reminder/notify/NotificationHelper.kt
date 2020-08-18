@@ -46,6 +46,7 @@ class NotificationHelper(context: Context): ContextWrapper(context) {
 
         return NotificationCompat.Builder(this, chanelId)
             .setContentTitle(eventTitle)
+            .setContentText("Tap to see the event")
             .setSmallIcon(R.drawable.notification_img)
             .setVibrate(vibrateArray)
     }

@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <receiver android:name=".notify.AlertReceiver"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>
