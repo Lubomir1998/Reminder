@@ -61,4 +61,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // remind for event when the app is not running
+    override fun onDestroy() {
+        super.onDestroy()
+
+        navigateToDetailScreen(intent)
+    }
+
 }
