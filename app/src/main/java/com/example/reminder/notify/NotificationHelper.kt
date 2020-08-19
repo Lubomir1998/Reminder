@@ -30,11 +30,6 @@ class NotificationHelper @Inject constructor(context: Context, private val repos
         createChanel()
     }
 
-    fun updateEvent(event: Event){
-        CoroutineScope(Dispatchers.IO).launch {
-            repository?.update(event)
-        }
-    }
 
     private fun createChanel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
