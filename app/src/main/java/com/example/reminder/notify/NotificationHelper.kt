@@ -68,6 +68,7 @@ class NotificationHelper @Inject constructor(context: Context, private val repos
 
         return NotificationCompat.Builder(this, chanelId)
             .setAutoCancel(true)
+            .setOngoing(true)
             .setContentTitle(eventTitle)
             .setContentText("Tap to see the event")
             .setSmallIcon(R.drawable.notification_img)
