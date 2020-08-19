@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
     app:startDestination="@id/mainScreen">
 
+    <action
+        android:id="@+id/action_global_go_to_detail_screen"
+        app:destination="@id/detailScreen"
+        app:launchSingleTop="true"/>
+
     <fragment
         android:id="@+id/mainScreen"
         android:name="com.example.reminder.ui.MainScreen"
@@ -42,6 +47,9 @@
         <action
             android:id="@+id/action_detailScreen_to_mainScreen"
             app:destination="@id/mainScreen" />
+        <argument
+            android:name="event_id"
+            app:argType="long" />
         <argument
             android:name="event_title"
             app:argType="string" />

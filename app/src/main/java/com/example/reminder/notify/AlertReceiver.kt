@@ -21,18 +21,14 @@ class AlertReceiver: BroadcastReceiver(){
             NotificationHelper(it)
         } ?: return
 
-        val eventTitle = intent?.getStringExtra("key")
-        val notificationId = intent?.getLongExtra("key2", -1)
-        val pastEvent = Event(notificationId!!, eventTitle!!, intent?.getStringExtra("key3"), true)
-        notificationHelper.updateEvent(pastEvent)
+        val eventTitle = intent?.getStringExtra("title")
+        val notificationId = intent?.getLongExtra("id", -1)
+        val description = intent?.getStringExtra("description")
 
         // in createNotification(string) function we give the event title as a parameter
-        val notification = notificationHelper.createNotification(eventTitle, context, pastEvent.timeStamp, pastEvent.title, pastEvent.description, pastEvent.isHappened).build()
+        val notification = notificationHelper.createNotification(notificationId!!, eventTitle!!, description!!).build()
 
-
-        Log.d("TAG", "************: $pastEvent")
-
-        notificationHelper.getManager().notify(notificationId.toInt(), notification)
+        notificationHelper.getManager().notify(notificationId!!.toInt(), notification)
 
 
     }

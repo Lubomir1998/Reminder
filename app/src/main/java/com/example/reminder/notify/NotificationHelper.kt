@@ -12,6 +12,7 @@ import com.example.reminder.R
 import com.example.reminder.db.Event
 import com.example.reminder.repository.Repository
 import com.example.reminder.ui.DetailScreen
+import com.example.reminder.ui.MainActivity
 import com.example.reminder.viewmodel.MainViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -53,30 +54,37 @@ class NotificationHelper @Inject constructor(context: Context, private val repos
     }
 
 
-    fun createNotification(eventTitle: String, @ApplicationContext context: Context, timeStamp: Long, title: String, description: String, isHapened: Boolean): NotificationCompat.Builder{
+    fun createNotification(id: Long, eventTitle: String, description: String): NotificationCompat.Builder{
 
         // create pending intent so when the user clicks the notification to go to the particular event
         //--------------------------------------
         //------------------------------------------
         //-----------------------------------
 
-        val intent = Intent(context, DetailScreen::class.java)
-        intent.putExtra("tkey", timeStamp)
-        intent.putExtra("titlekey", title)
-        intent.putExtra("dkey", description)
-        intent.putExtra("ikey", isHapened)
-        val pendingIntent = PendingIntent.getActivity(context, 99, intent, 0)
+        val intent = Intent(applicationContext, MainActivity::class.java).also { intent->
+            intent.action = "Go to detail screen"
+            intent.putExtra("1", eventTitle)
+            intent.putExtra("2", id)
+            intent.putExtra("3", description)
+        }
+
 
         val vibrateArray = longArrayOf(1500)
 
         return NotificationCompat.Builder(this, chanelId)
+            .setAutoCancel(true)
             .setContentTitle(eventTitle)
             .setContentText("Tap to see the event")
             .setSmallIcon(R.drawable.notification_img)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(mainActivityPendingIntent(intent, id.toInt() + 1))
             .setVibrate(vibrateArray)
     }
 
+    private fun mainActivityPendingIntent(intent: Intent, requestCode: Int): PendingIntent = PendingIntent.getActivity(applicationContext,
+        requestCode,
+        intent,
+        0
+    )
 
 
 }

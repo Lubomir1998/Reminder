@@ -58,11 +58,12 @@ class MainScreen : Fragment(R.layout.main_fragment) {
         listener = object : MyAdapter.OnItemClickListener {
             override fun onEventClicked(event: Event) {
 
+                val timestamp = event.timeStamp
                 val title = event.title
                 val description = event.description
                 val isHappened = event.isHappened
 
-                val action = MainScreenDirections.actionMainScreenToDetailScreen(title, description, isHappened)
+                val action = MainScreenDirections.actionMainScreenToDetailScreen(timestamp, title, description, isHappened)
                 view.findNavController().navigate(action)
 
             }
