@@ -39,7 +39,7 @@ class AlertReceiver: BroadcastReceiver(){
         val notification = notificationHelper.createNotification(
             notificationId!!,
             eventTitle ?: "Event",
-            description ?: "Device has been turned off"
+            description ?: "Device has been turned off and event's data has been lost :("
         ).build()
 
         notificationHelper.getManager().notify(notificationId.toInt(), notification)
