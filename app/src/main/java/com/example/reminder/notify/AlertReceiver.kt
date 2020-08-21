@@ -12,7 +12,7 @@ class AlertReceiver: BroadcastReceiver(){
     private lateinit var notificationHelper: NotificationHelper
 
 
-    @SuppressLint("InvalidWakeLockTag")
+    @SuppressLint("InvalidWakeLockTag", "UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, intent: Intent?) {
 
         // wake the screen after receiving the notification
@@ -38,11 +38,11 @@ class AlertReceiver: BroadcastReceiver(){
         // in createNotification(string) function we give the event title as a parameter
         val notification = notificationHelper.createNotification(
             notificationId!!,
-            eventTitle!!,
-            description!!
+            eventTitle ?: "Event",
+            description ?: "Device has been turned off"
         ).build()
 
-        notificationHelper.getManager().notify(notificationId!!.toInt(), notification)
+        notificationHelper.getManager().notify(notificationId.toInt(), notification)
 
 
     }

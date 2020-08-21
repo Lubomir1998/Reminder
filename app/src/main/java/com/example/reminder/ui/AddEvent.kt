@@ -94,7 +94,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
             binding.addEventEditText.text.clear()
 
-            startAlarm(title, event)
+            startAlarm(event)
 
             Toast.makeText(requireContext(), "Event added", Toast.LENGTH_SHORT).show()
             view?.findNavController()?.navigate(R.id.action_addEvent_to_mainScreen)
@@ -133,14 +133,14 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         binding.timeTextView.text = "$h:$m"
     }
 
-    private fun startAlarm(title: String, event: Event){
+    fun startAlarm(event: Event){
 
         val alarmManager: AlarmManager = requireContext().getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(requireContext(), AlertReceiver::class.java)
 
         intent.putExtra("id", event.timeStamp)
-        intent.putExtra("title", title)
+        intent.putExtra("title", event.title)
         intent.putExtra("description", event.description)
 
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), event.timeStamp.toInt(), intent, 0)
