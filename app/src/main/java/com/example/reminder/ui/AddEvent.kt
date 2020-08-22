@@ -43,6 +43,8 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         super.onResume()
 
         (activity as MainActivity).supportActionBar?.title = "Add event"
+        loadTextFromEditTexts()
+        Log.d("TAG", "opaopaopa onresume: triggered ")
     }
 
     override fun onCreateView(
@@ -55,8 +57,6 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        loadTextFromEditTexts()
 
 
         binding.dateButton.setOnClickListener {
@@ -83,6 +83,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         super.onPause()
 
         saveTextFromEditTexts()
+        Log.d("TAG", "opaopaopa onpause: triggered ")
     }
 
     private fun addEvent(){
@@ -110,6 +111,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
             Toast.makeText(requireContext(), "Event added", Toast.LENGTH_SHORT).show()
             view?.findNavController()?.navigate(R.id.action_addEvent_to_mainScreen)
+            Log.d("TAG", "opaopaopa addEvent: triggered ")
         }
     }
 
@@ -166,8 +168,6 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         val editor = sharedPrefs.edit()
         editor.putString("editTextTitle", binding.addEventEditText.text.toString())
         editor.putString("editTextDesc", binding.descriptionEditText.text.toString())
-        editor.putString("textViewDate", binding.dateTextView.text.toString())
-        editor.putString("textViewTime", binding.timeTextView.text.toString())
         editor.apply()
     }
 
@@ -175,13 +175,9 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         val sharedPrefs = requireActivity().getSharedPreferences("com.example.reminder.ui", MODE_PRIVATE) ?: return
         val typedTitle = sharedPrefs.getString("editTextTitle", binding.addEventEditText.text.toString())
         val typedDesc = sharedPrefs.getString("editTextDesc", binding.descriptionEditText.text.toString())
-        val typedDate = sharedPrefs.getString("textViewDate", binding.dateTextView.text.toString())
-        val typedTime = sharedPrefs.getString("textViewTime", binding.timeTextView.text.toString())
 
         binding.addEventEditText.setText(typedTitle)
         binding.descriptionEditText.setText(typedDesc)
-        binding.dateTextView.text = typedDate
-        binding.timeTextView.text = typedTime
     }
 
 

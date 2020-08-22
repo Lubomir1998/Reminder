@@ -64,7 +64,7 @@ class NotificationHelper @Inject constructor(context: Context, private val repos
         }
 
 
-        val vibrateArray = longArrayOf(1500, 1000, 1500)
+        val vibrateArray = longArrayOf(2000, 2000, 2000)
 
         return NotificationCompat.Builder(this, chanelId)
             .setAutoCancel(true)
