@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +17,6 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +56,9 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadTextFromEditTexts()
+
+
         binding.dateButton.setOnClickListener {
             val datePicker = DatePickerFragment()
             datePicker.setTargetFragment(this, 0)
@@ -76,6 +79,12 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        saveTextFromEditTexts()
+    }
+
     private fun addEvent(){
         if(binding.addEventEditText.text.toString() == "" || binding.dateTextView.text.toString() == "YYYY-MM-DD" || binding.timeTextView.text.toString() == "HH:MM"){
             Toast.makeText(requireContext(), "Title, date and time must be selected!", Toast.LENGTH_SHORT).show()
@@ -93,6 +102,9 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
             model.insertInDB(event)
 
             binding.addEventEditText.text.clear()
+            binding.descriptionEditText.text.clear()
+            binding.dateTextView.text = "YYYY-MM-DD"
+            binding.timeTextView.text = "HH:MM"
 
             startAlarm(event)
 
@@ -133,7 +145,7 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
         binding.timeTextView.text = "$h:$m"
     }
 
-    fun startAlarm(event: Event){
+    private fun startAlarm(event: Event){
 
         val alarmManager: AlarmManager = requireContext().getSystemService(ALARM_SERVICE) as AlarmManager
 
@@ -145,8 +157,32 @@ class AddEvent : Fragment(R.layout.add_event_fragment), DatePickerDialog.OnDateS
 
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), event.timeStamp.toInt(), intent, 0)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-
-
     }
+
+    private fun saveTextFromEditTexts(){
+        // save the text from event's title and description edit texts in case
+        // the user returns back to the main screen without setting the event
+        val sharedPrefs = requireActivity().getSharedPreferences("com.example.reminder.ui", MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putString("editTextTitle", binding.addEventEditText.text.toString())
+        editor.putString("editTextDesc", binding.descriptionEditText.text.toString())
+        editor.putString("textViewDate", binding.dateTextView.text.toString())
+        editor.putString("textViewTime", binding.timeTextView.text.toString())
+        editor.apply()
+    }
+
+    private fun loadTextFromEditTexts(){
+        val sharedPrefs = requireActivity().getSharedPreferences("com.example.reminder.ui", MODE_PRIVATE) ?: return
+        val typedTitle = sharedPrefs.getString("editTextTitle", binding.addEventEditText.text.toString())
+        val typedDesc = sharedPrefs.getString("editTextDesc", binding.descriptionEditText.text.toString())
+        val typedDate = sharedPrefs.getString("textViewDate", binding.dateTextView.text.toString())
+        val typedTime = sharedPrefs.getString("textViewTime", binding.timeTextView.text.toString())
+
+        binding.addEventEditText.setText(typedTitle)
+        binding.descriptionEditText.setText(typedDesc)
+        binding.dateTextView.text = typedDate
+        binding.timeTextView.text = typedTime
+    }
+
 
 }
